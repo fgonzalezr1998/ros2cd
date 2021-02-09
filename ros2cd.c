@@ -35,6 +35,8 @@ is_ros_pkg(char * path)
         }
     } while (folder_entry != NULL && !found);
 
+    closedir(dir);
+
     return found;
 }
 
@@ -97,6 +99,8 @@ pkg_found(char * path, char * dst_pkg, char *out_pkg)
             }
         }
     } while (folder_entry != NULL && !found);
+
+    closedir(dir);
 
     return found;
 }
