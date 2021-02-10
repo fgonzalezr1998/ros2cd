@@ -47,7 +47,7 @@ names_are_equals(char * path, char * dst_pkg)
 
     p_name = strrchr(path, '/');
     p_name = p_name + sizeof(char);
-    printf("%s\n", p_name);
+    // printf("%s\n", p_name);
     return strncmp(p_name, dst_pkg, strlen(p_name)) == 0;
 }
 
@@ -93,7 +93,7 @@ pkg_found(char * path, char * dst_pkg, char *out_pkg)
                     memcpy(out_pkg, p, strlen(p) * sizeof(char));
                     found = 1;
                 } else {
-                    printf("Probando con: %s\n", p);
+                    // printf("Probando con: %s\n", p);
                     found = pkg_found(p, dst_pkg, out_pkg);
                 }
             }
@@ -131,13 +131,16 @@ move_to_pkg(int fd, char * dst_pkg)
             i = 0;
             if (pkg_found(pkgs_path, dst_pkg, out_pkg)) {
                 // move to 'out_pkg'!
+				printf("%s\n", out_pkg);
                 found = 1;
             }
         }
     } while(bytes > 0 && !found);
 
-    if (!found)
+    if (!found) {
         printf("%s\n", "[WARN] package not found!");
+        return 0;
+    }
 
     return 1;
 }
