@@ -1,7 +1,7 @@
 #! /bin/bash
 
 ros2cd() {
-	output=$(./ros2cd/ros2cd $1)
+	output=$(ros2prp $1)
 	if [ $? -eq 0 ]
 	then
 		cd $output
