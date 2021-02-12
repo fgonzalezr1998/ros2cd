@@ -13,7 +13,7 @@ $ gcc -c -Wall -Wshadow ros2ppr.c
 $ gcc -o ros2ppr ros2ppr.o
 ```
 
-These commands will have created an executable named *ros2prp* (ros2 Package Path Resolution).
+These commands will have created an executable named *ros2ppr* (ros2 Package Path Resolution).
 
 ### Move the executable to $PATH
 
