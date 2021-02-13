@@ -47,7 +47,7 @@ names_are_equals(char * path, char * dst_pkg)
 
     p_name = strrchr(path, '/');
     p_name = p_name + sizeof(char);
-    // printf("%s\n", p_name);
+
     return strncmp(p_name, dst_pkg, strlen(p_name)) == 0;
 }
 
@@ -93,7 +93,6 @@ pkg_found(char * path, char * dst_pkg, char *out_pkg)
                     memcpy(out_pkg, p, strlen(p) * sizeof(char));
                     found = 1;
                 } else {
-                    // printf("Probando con: %s\n", p);
                     found = pkg_found(p, dst_pkg, out_pkg);
                 }
             }
@@ -106,7 +105,7 @@ pkg_found(char * path, char * dst_pkg, char *out_pkg)
 }
 
 int
-move_to_pkg(int fd, char * dst_pkg)
+find_pkg(int fd, char * dst_pkg)
 {
     int bytes, found, i;
     char c;
@@ -130,8 +129,7 @@ move_to_pkg(int fd, char * dst_pkg)
             pkgs_path[i] = '\0';
             i = 0;
             if (pkg_found(pkgs_path, dst_pkg, out_pkg)) {
-                // move to 'out_pkg'!
-				printf("%s\n", out_pkg);
+                printf("%s\n", out_pkg);
                 found = 1;
             }
         }
@@ -163,7 +161,7 @@ main(int argc, char * argv[])
             EXIT_FAILURE, "[%s] %s\n", paths_file, "can't be opened!");
     }
 
-    if (!move_to_pkg(fd, argv[1])) {
+    if (!find_pkg(fd, argv[1])) {
         close(fd);
         exit(EXIT_FAILURE);
     }
