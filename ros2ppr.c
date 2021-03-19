@@ -7,9 +7,10 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <limits.h>
 
 #define NARGS 2
-#define MAXPATH 128
+#define MAXPATH 256
 #define PATHSFILE "/.ros2cd/paths.txt"
 
 int
@@ -65,7 +66,7 @@ pkg_found(char * path, char * dst_pkg, char *out_pkg)
 {
     DIR *dir;
     struct dirent *folder_entry;
-    char p[MAXPATH];
+    char p[MAXPATH], p_sym[MAXPATH];
     int found;
 
     dir = opendir(path);
@@ -82,7 +83,7 @@ pkg_found(char * path, char * dst_pkg, char *out_pkg)
                 if (strcmp(folder_entry->d_name, ".") == 0 || 
                     strcmp(folder_entry->d_name, "..") == 0) {
                         continue;
-                    }
+                }
                 // Create the new sub-path:
 
                 memcpy(p, path, strlen(path) * sizeof(char));
@@ -94,6 +95,21 @@ pkg_found(char * path, char * dst_pkg, char *out_pkg)
                     found = 1;
                 } else {
                     found = pkg_found(p, dst_pkg, out_pkg);
+                }
+            } else if (folder_entry->d_type == DT_LNK) {
+                // Create the new sub-path:
+
+                memcpy(p, path, strlen(path) * sizeof(char));
+                strncat(p, "/", 1 * sizeof(char));
+                strncat(p, folder_entry->d_name, 
+                    strlen(folder_entry->d_name) * sizeof(char));
+                if(realpath(p, p_sym) == NULL)
+                    continue;
+                if(pkg_ok(p_sym, dst_pkg)) {
+                    memcpy(out_pkg, p_sym, strlen(p_sym) * sizeof(char));
+                    found = 1;
+                } else {
+                    found = pkg_found(p_sym, dst_pkg, out_pkg);
                 }
             }
         }
